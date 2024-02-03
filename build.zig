@@ -4,6 +4,10 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const FALLBACK_CONFIG_DIRS = b.option([]const u8, "FALLBACK_CONFIG_DIRS", "") orelse "\"/etc/xdg\"";
+    const FALLBACK_DATA_DIRS = b.option([]const u8, "FALLBACK_DATA_DIRS", "") orelse "\"/usr/local/share:/usr/share\"";
+    const SYSCONFDIR = b.option([]const u8, "SYSCONFDIR", "") orelse "\"\"";
+
     const @"Vulkan-Headers" = b.dependency(
         "Vulkan-Headers",
         .{
@@ -52,12 +56,13 @@ pub fn build(b: *std.Build) void {
                 "loader/loader_linux.c",
             },
         });
-        vulkan_loader.root_module.addCMacro("FALLBACK_CONFIG_DIRS", "\"/etc/xdg\"");
-        vulkan_loader.root_module.addCMacro("FALLBACK_DATA_DIRS", "\"/usr/local/share:/usr/share\"");
-        vulkan_loader.root_module.addCMacro("SYSCONFDIR", "\"\"");
+        vulkan_loader.root_module.addCMacro("FALLBACK_CONFIG_DIRS", FALLBACK_CONFIG_DIRS);
+        vulkan_loader.root_module.addCMacro("FALLBACK_DATA_DIRS", FALLBACK_DATA_DIRS);
+        vulkan_loader.root_module.addCMacro("SYSCONFDIR", SYSCONFDIR);
     }
 
     vulkan_loader.linkLibrary(@"Vulkan-Headers".artifact("vulkan-headers"));
+    vulkan_loader.installLibraryHeaders(@"Vulkan-Headers".artifact("vulkan-headers"));
     vulkan_loader.linkLibC();
 
     b.installArtifact(vulkan_loader);
