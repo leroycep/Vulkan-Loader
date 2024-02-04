@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
         },
     );
 
-    const vulkan_loader = b.addStaticLibrary(.{
+    const vulkan_loader = b.addSharedLibrary(.{
         .name = "vulkan",
         .target = target,
         .optimize = optimize,
