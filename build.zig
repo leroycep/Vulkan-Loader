@@ -72,6 +72,16 @@ pub fn build(b: *std.Build) void {
         });
     }
 
+    // TODO: Figure out how they implement this logic in CMakeLists.txt
+    const use_c_unknown_ext_chain = true;
+    if (use_c_unknown_ext_chain) {
+        vulkan_loader.addCSourceFiles(.{
+            .files = &.{
+                "loader/unknown_ext_chain.c",
+            },
+        });
+    }
+
     vulkan_loader.linkLibrary(@"Vulkan-Headers".artifact("vulkan-headers"));
     vulkan_loader.installLibraryHeaders(@"Vulkan-Headers".artifact("vulkan-headers"));
     vulkan_loader.linkLibC();
