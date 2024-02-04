@@ -21,6 +21,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    vulkan_loader.root_module.pic = true;
     vulkan_loader.addIncludePath(.{ .path = "loader/" });
     vulkan_loader.addIncludePath(.{ .path = "loader/generated" });
 
