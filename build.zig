@@ -61,6 +61,17 @@ pub fn build(b: *std.Build) void {
         vulkan_loader.root_module.addCMacro("SYSCONFDIR", SYSCONFDIR);
     }
 
+    if (target.result.os.tag == .windows) {
+        //
+    } else {
+        vulkan_loader.addCSourceFiles(.{
+            .files = &.{
+                "loader/dev_ext_trampoline.c",
+                "loader/phys_dev_ext.c",
+            },
+        });
+    }
+
     vulkan_loader.linkLibrary(@"Vulkan-Headers".artifact("vulkan-headers"));
     vulkan_loader.installLibraryHeaders(@"Vulkan-Headers".artifact("vulkan-headers"));
     vulkan_loader.linkLibC();
